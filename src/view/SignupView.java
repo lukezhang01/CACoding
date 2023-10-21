@@ -1,5 +1,8 @@
 package view;
 
+import interface_adapter.clear_users.ClearController;
+import interface_adapter.clear_users.ClearState;
+import interface_adapter.clear_users.ClearViewModel;
 import interface_adapter.signup.SignupController;
 import interface_adapter.signup.SignupState;
 import interface_adapter.signup.SignupViewModel;
@@ -28,7 +31,7 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
     // TODO Note: this is the new JButton for clearing the users file
     private final JButton clear;
 
-    public SignupView(SignupController controller, SignupViewModel signupViewModel) {
+    public SignupView(ClearController clearController, ClearViewModel clearViewModel, SignupController controller, SignupViewModel signupViewModel) {
 
         this.signupController = controller;
         this.signupViewModel = signupViewModel;
@@ -54,6 +57,7 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
         //      a CLEAR_BUTTON_LABEL constant which is defined in the SignupViewModel class.
         //      You need to add this "clear" button to the "buttons" panel.
         clear = new JButton(SignupViewModel.CLEAR_BUTTON_LABEL);
+        buttons.add(clear);
 
         signUp.addActionListener(
                 // This creates an anonymous subclass of ActionListener and instantiates it.
@@ -79,7 +83,18 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
+                        if (e.getSource().equals(clear)) {
+                            clearController.execute();
+                            ClearState clearState = clearViewModel.getState();
+                            String clearedUsers = "";
+                            for (String user : clearState.getNames()) {
+                                clearedUsers += user + "\n";
+                            }
+                            System.out.print("clearedUsers: ");
+                            System.out.print(clearedUsers);
+                            JOptionPane.showMessageDialog(SignupView.this, clearedUsers);
 
+                        }
                     }
                 }
         );
